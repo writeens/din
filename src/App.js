@@ -1,26 +1,28 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react';
+import './App.global.css';
+import './styles/main.css';
+import NewsFeed from './components/NewsFeed';
+import NewsDetail from './components/NewsDetail';
+import {NewsProvider} from './context/newsContext'
 
-function App() {
+const App = () => {
+  const [showDetails, setShowDetails] = useState(false)
+  const [details, setDetails] = useState({title:'', type:''})
+
+  const navigateToDetails = (title, type) => {
+    setShowDetails(true)
+    setDetails({title, type})
+  }
+
+  const navigateToHome = () => {
+    setShowDetails(false)
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+  <NewsProvider>
+    {!showDetails && <NewsFeed handleNavigation={navigateToDetails}/>}
+    {showDetails && <NewsDetail handleNavigation={navigateToHome} details={details}/>}
+  </NewsProvider>
+)}
 
 export default App;

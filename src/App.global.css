@@ -1,0 +1,15 @@
+.customScroll::-webkit-scrollbar {
+    height: 6px;
+    scrollbar-width: thin;
+}
+/*Scrollbar Track */
+.customScroll::-webkit-scrollbar-track {
+  background:transparent;
+  width: 1px;
+}
+
+/*Scrollbar Handle */
+.customScroll::-webkit-scrollbar-thumb {
+  background:#E93D25;
+  border-radius: 0.5rem;
+}
