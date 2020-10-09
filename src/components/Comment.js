@@ -38,7 +38,7 @@ const Comment = observer(({type, title}) => {
 
   useEffect(() => {
     getComments()
-  }, [])
+  }, [title, type])
 
   return (
     <div style={{ minHeight: '300px' }} className="flex flex-col">

@@ -2,20 +2,21 @@ import axios from 'axios';
 import dayjs from 'dayjs';
 import database, { firebase } from '../firebase/config';
 
-const API_KEY = process.env.REACT_APP_API_KEY;
-const BASE_URL = 'https://newsapi.org/v2/top-headlines?language=en&country=us';
+const BASE_URL = 'https://disc-news.herokuapp.com/';
 
+/** FETCH NEWS */
 const fetchNews = async (category) => {
-  const URL = `${BASE_URL}&category=${category}&apiKey=${API_KEY}`;
+  const URL = `${BASE_URL}?category=${category}`;
   try {
     const response = await axios.get(URL);
-    return response.data;
+    return response.data.data;
   } catch (e) {
     console.log(e.response);
     return null;
   }
 };
 
+/** CREATE COMMENTS IN FIRESTORE */
 const createCommentInFirestore = async (commentData) => {
   try {
     const {
@@ -67,6 +68,7 @@ const createCommentInFirestore = async (commentData) => {
   }
 };
 
+/** GET COMMENTS FROM FIRESTORE */
 const getCommentsFromFirestore = async (type, title) => {
   try {
     const commentsRef = await database.collection('dinComments')
@@ -74,6 +76,9 @@ const getCommentsFromFirestore = async (type, title) => {
       .where('title', '==', title)
       .get();
 
+    if (commentsRef.size <= 0) {
+      return [];
+    }
     let { comments } = commentsRef.docs[0].data();
 
     comments = comments.sort((a, b) => b.postedAt.seconds - a.postedAt.seconds);
@@ -85,6 +90,7 @@ const getCommentsFromFirestore = async (type, title) => {
   }
 };
 
+/** CONVERT FIREBASE TIMESTAMP TO READABLE FORMAT */
 const convertTimestamp = (t, format) => {
   const date = t.toDate();
   return dayjs(date).format(format);

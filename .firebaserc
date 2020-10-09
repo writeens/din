@@ -1,0 +1,17 @@
+{
+  "projects": {
+    "default": "alldemos-58c1e"
+  },
+  "targets": {
+    "alldemos-58c1e": {
+      "hosting": {
+        "disc-news": [
+          "news"
+        ],
+        "news": [
+          "disc-news"
+        ]
+      }
+    }
+  }
+}

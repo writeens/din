@@ -10,6 +10,8 @@ import {
 class NewsStore {
   state = 'pending'
 
+  category = 'business'
+
   commentState = ''
 
   comments = []
@@ -30,6 +32,7 @@ class NewsStore {
       makeObservable(this, {
         news: observable,
         state: observable,
+        category: observable,
         commentState: observable,
         comments: observable,
         fetchNewsItem: action,
@@ -42,6 +45,7 @@ class NewsStore {
     fetchNewsItem = async (category) => {
       this.news = [];
       this.state = 'pending';
+      this.category = category;
       try {
         const newsDetails = await fetchNews(category);
         const updatedNews = newsDetails.articles.map((item) => {
@@ -58,7 +62,6 @@ class NewsStore {
           this.news = updatedNews;
         });
       } catch (e) {
-        console.log('In Store Error');
         runInAction(() => {
           this.state = 'error';
         });
@@ -67,6 +70,7 @@ class NewsStore {
 
     updateNewsItem = async (category) => {
       this.state = 'pending';
+      this.category = category;
       try {
         const newsDetails = await fetchNews(category);
         let updatedNews = newsDetails.articles.map((item) => {
@@ -77,6 +81,7 @@ class NewsStore {
             type: category,
           };
         });
+
         updatedNews = updatedNews.filter((item) => {
           const foundItem = this.news.find((itemInState) => itemInState.type === item.type && itemInState.title === item.title);
           if (foundItem) {
@@ -91,7 +96,6 @@ class NewsStore {
           this.totalResults[category] = newsDetails.totalResults;
         });
       } catch (e) {
-        console.log('In Store Error');
         runInAction(() => {
           this.state = 'error';
         });
@@ -129,11 +133,19 @@ class NewsStore {
 
     fetchComments = async (type, title) => {
       const fetchedComments = await getCommentsFromFirestore(type, title);
-      // console.log(comments);
 
       if (!fetchedComments) {
         runInAction(() => {
           this.commentState = 'error';
+          this.comments = [];
+        });
+        return;
+      }
+
+      if (fetchedComments.length === 0) {
+        runInAction(() => {
+          this.commentState = 'error';
+          this.comments = [];
         });
         return;
       }

@@ -55,7 +55,7 @@ const NewsItem = ({
       )}
       <div className="px-4 pt-2 pb-4 text-sm h-40 flex flex-col justify-between">
         <p className=" text-blue-900 font-semibold">{postedAt}</p>
-        <p className="text-justify">{title}</p>
+        <p className="text-justify">{title.length >= 140 ? `${title.slice(0, 141)}...` : title}</p>
         <p className=" text-red-600 font-semibold text-right">{author}</p>
       </div>
     </div>
@@ -70,11 +70,11 @@ const NewsFeed = observer(({handleNavigation}) => {
   const [category, setCategory] = useState('business')
   
   /**HANDLE USER CLICK CATEGORY */
-  const handleClickCategory = async (category) => {
-    await newsStore.updateNewsItem(category)
-    const title = categories.find((item) => item.value === category)
+  const handleClickCategory = async (newCategory) => {
+    setCategory(newCategory)
+    await newsStore.updateNewsItem(newCategory)
+    const title = categories.find((item) => item.value === newCategory)
     setNewsType(title.label)
-    setCategory(category)
   }
 
   /**FETCH NEWS ITEM */
@@ -92,8 +92,12 @@ const NewsFeed = observer(({handleNavigation}) => {
   }, [])
 
   useEffect(() => {
-    setNews(newsStore.news.filter((item) => item.type === category))
-  }, [newsStore.news, newsStore.category])
+    const categoryNews = newsStore.news.filter((item) => item.type === category)
+    if(categoryNews[0]){
+      console.log(categoryNews[0].type)
+    }
+    setNews(categoryNews)
+  }, [newsStore.news])
 
   const renderNewsItems = () => {
     if(newsStore.state === 'pending'){
