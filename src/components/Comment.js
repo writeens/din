@@ -42,8 +42,8 @@ const Comment = observer(({type, title}) => {
 
   return (
     <div style={{ minHeight: '300px' }} className="flex flex-col">
-      <form className="flex items-center justify-between mb-8" onSubmit={handleSubmitComment}>
-        <textarea className="border-2 border-blue-100 rounded-md p-2 w-5/6" rows={5} value={comment} onChange={handleChange} placeholder="Leave a comment" required />
+      <form className="flex flex-col md:flex-row items-center justify-between mb-8" onSubmit={handleSubmitComment}>
+        <textarea className=" md:mr-2 mr-0 mb-4 md:mb-0 border-2 border-blue-100 rounded-md p-2 w-full md:w-5/6" rows={5} value={comment} onChange={handleChange} placeholder="Leave a comment" required />
         <button type="submit" className="text-white bg-blue-900 px-6 py-2 rounded-md">{newsStore.commentState === 'pending' ? 'Commenting' : 'Comment'}</button>
       </form>
       <div className="flex flex-col">
